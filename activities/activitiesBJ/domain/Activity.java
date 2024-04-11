@@ -1,12 +1,9 @@
 package domain;
 
 
-
-public abstract class Activity{
-    
+public abstract class Activity{    
     protected String name;
     protected Integer cost;
-
     
     public Activity(String name, Integer cost){
         this.name=name;
@@ -21,15 +18,12 @@ public abstract class Activity{
         return name;
     }
 
- 
-    
     /**
      * Return time
      * @return
      * @throws ProjectException, if the time is not available or has an error
      */
     public abstract int time() throws ProjectException;
-    
     
     /**
      * Return cost
@@ -38,12 +32,10 @@ public abstract class Activity{
      */
     public abstract int cost() throws ProjectException;
     
-    
     /**
      * Return the representation as string
      * @return
      * @throws ProjectException, if the data is not complete
      */    
     public abstract String data() throws ProjectException;
-
 }

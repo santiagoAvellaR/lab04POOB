@@ -3,7 +3,6 @@ package domain;
 import java.util.ArrayList;
 
 public class Composed extends Activity{
-   
     private boolean parallel;
     private ArrayList<Activity> activities;
     
@@ -21,19 +20,18 @@ public class Composed extends Activity{
 
      /**
      * Add a new activity
-     * @param a
+     * @param a the activity you want to add
      */   
     public void add(Activity a){
         activities.add(a);
     }
-       
  
     @Override
     public int cost(){
-        return 0;
+        return cost;
     }
     
-    private int getTheMaximunIntInActivities() throws ProjectException{
+    private int getTheMaximunTimeInActivities() throws ProjectException{
         int max = 0;
         for (Activity activity : activities){
             if (activity.time() > max){
@@ -57,22 +55,18 @@ public class Composed extends Activity{
      */
     @Override
     public int time() throws ProjectException{
-        if(activities.size()<=0){
-            throw new ProjectException(ProjectException.COMPOSED_EMPTY);
+        if(activities.size() <= 0){throw new ProjectException(ProjectException.COMPOSED_EMPTY);}
+        int totalTime = 0;
+        if(parallel){
+            totalTime = getTheMaximunTimeInActivities();
         }
         else{
-            int totalTime = 0;
-            if(parallel){
-                totalTime = getTheMaximunIntInActivities();
-            }
-            else{
-                totalTime = getTheTimeSumOfActivities();
-            }
-            return totalTime;
-        } 
+            totalTime = getTheTimeSumOfActivities();
+        }
+        return totalTime;
     }
     
-    private int getTheMaximunIntInActivitiesHandleException(int dUnknow, int dError, int dEmpty){
+    private int getTheMaximunTimeInActivitiesHandleException(int dUnknow, int dError, int dEmpty){
         int max = 0;
         for (Activity activity : activities){
             try{
@@ -126,7 +120,7 @@ public class Composed extends Activity{
     public int time(int dUnknow, int dError, int dEmpty){
         int totalTime = 0;
         if(parallel){
-            totalTime = getTheMaximunIntInActivitiesHandleException(dUnknow, dError, dEmpty);
+            totalTime = getTheMaximunTimeInActivitiesHandleException(dUnknow, dError, dEmpty);
         }
         else{
             totalTime = getTheTimeSumOfActivitiesHandleException(dUnknow, dError, dEmpty);
@@ -134,27 +128,48 @@ public class Composed extends Activity{
         return totalTime;
     }
     
-     /**
+    /**
      * Calculate an estimated price considering the modality, if is possible.
      * @param modality ['A'(verage), 'M' (ax)] Use the average or maximum time of known activities to estimate unknown ones or those with error.
      * @return 
      * @throws ProjectException  IMPOSSIBLE, if it can't be calculated
-     * /
+    */
     public int time(char modality){
         return 0;
     } 
     
-     /**
+    /**
+     * 
      * Calculates an time of a subactivity
-     * @return 
+     * @return the duration of the subactivity
      * @throws ProjectException UNKNOWN, if it doesn't exist. IMPOSSIBLE, if it can't be calculated
      */
-    public int time(String activity) throws ProjectException{
-        return 0;
-    }   
+    public int time(String activityName) throws ProjectException{
+        Activity activity = findActivity(activityName);
+        if(activity == null){throw new ProjectException(ProjectException.UNKNOWN);}
+        try{
+            int time = activity.time();
+            return time;
+        }
+        catch(ProjectException e){
+            throw new ProjectException(ProjectException.IMPOSSIBLE);
+        }
+    }
     
-    
-
+    /**
+     * Find the activity given the name of an activity
+     * @param the name of the activity
+     * @return the activity that matchs with the name
+     */
+    private Activity findActivity(String activityName){
+        Activity activity = null;
+        for(Activity act : activities){
+            if(act.name().equals(activityName)){
+                activity = act;
+            }
+        }
+        return activity;
+    }
     
     @Override
     public String data() throws ProjectException{
@@ -164,7 +179,5 @@ public class Composed extends Activity{
             answer.append("\n\t"+b.data());
         }
         return answer.toString();
-    } 
-    
-
+    }
 }

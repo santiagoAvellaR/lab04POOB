@@ -9,21 +9,17 @@ import org.junit.Test;
 
 
 public class ActivityTest{
-    public ActivityTest(){
-    }
-
+    public ActivityTest(){}
 
     @Before
-    public void setUp(){    
-    }
+    public void setUp(){}
 
     @After
-    public void tearDown(){
-    }
+    public void tearDown(){}
     
     /*LEVEL 2*/
     @Test
-    public void shouldCalculateTheTimeOfAComposedSecuencialActivity(){
+    public void shouldCalculateTheTimeOfAComposedSecuencialActivityLevel2(){
         Composed c = new Composed("IS-BASICA", 100 , false );
         c.add(new Simple("AYED", 10, 10));
         c.add(new Simple("MBDA", 10, 20));
@@ -91,28 +87,114 @@ public class ActivityTest{
     /*LEVEL 3*/
     @Test
     public void shouldCalculateTheTimeOfAComposedSecuencialActivityLevel3(){
-        Composed c = new Composed("IS-BASICA", 100 , false );
-        c.add(new Simple("AYED", 10, 10));
-        c.add(new Simple("MBDA", 10, 20));
-        c.add(new Simple("POOB", 10, 15));
-        Composed c1 = new Composed("IS-BASICA", 100 , false );
+        Composed c = new Composed("IS PREGADO", 100 , false );
+        Composed c1 = new Composed("IS-AVANZADA", 100 , false );
+        Composed c2 = new Composed("IS-MEDIA", 100 , false );
+        Composed c3 = new Composed("IS-BASICA", 100 , false );
+        c.add(c1);
+        c.add(c2);
+        c.add(c3);
+        c1.add(new Simple("AYPR", 10, 5));
+        c1.add(new Simple("MMIN", 10, 5));
+        c1.add(new Simple("LCAT", 10, 5));
+        c2.add(new Simple("AYED", 10, 10));
+        c2.add(new Simple("MBDA", 10, 10));
+        c2.add(new Simple("POOB", 10, 10));
+        c3.add(new Simple("CVDS", 10, 20));
+        c3.add(new Simple("ARSW", 10, 20));
         try {
-           assertEquals(45,c.time());
+           assertEquals(85,c.time());
         } catch (ProjectException e){
             fail("Threw a exception");
-        }    
+        }
     }    
     
     @Test
     public void shouldCalculateTheTimeOfAComposedParallelActivityLevel3(){
-        Composed c = new Composed("IS-BASICA", 100 , true );
-        c.add(new Simple("AYED", 10, 10));
-        c.add(new Simple("MBDA", 10, 20));
-        c.add(new Simple("POOB", 10, 15));
+        Composed c = new Composed("IS PREGADO", 100 , true );
+        Composed c1 = new Composed("IS-AVANZADA", 100 , true );
+        Composed c2 = new Composed("IS-MEDIA", 100 , true );
+        Composed c3 = new Composed("IS-BASICA", 100 , true );
+        c.add(c1);
+        c.add(c2);
+        c.add(c3);
+        c1.add(new Simple("AYPR", 10, 10));
+        c1.add(new Simple("MMIN", 10, 10));
+        c1.add(new Simple("LCAT", 10, 10));
+        c2.add(new Simple("AYED", 10, 10));
+        c2.add(new Simple("MBDA", 10, 20));
+        c2.add(new Simple("POOB", 10, 15));
+        c3.add(new Simple("CVDS", 10, 10));
+        c3.add(new Simple("ARSW", 10, 10));
         try {
            assertEquals(20,c.time());
         } catch (ProjectException e){
             fail("Threw a exception");
+        }    
+    }  
+    
+    
+    @Test
+    public void shouldThrowExceptionIfComposedIsEmptyLevel3(){
+        Composed c = new Composed("IS PREGADO", 100 , false );
+        Composed c1 = new Composed("IS-AVANZADA", 100 , false );
+        Composed c2 = new Composed("IS-MEDIA", 100 , false );
+        Composed c3 = new Composed("IS-BASICA", 100 , false );
+        try { 
+           int time=c.time();
+           fail("Did not throw exception");
+        } catch (ProjectException e) {
+            assertEquals(ProjectException.COMPOSED_EMPTY,e.getMessage());
+        }    
+    }    
+    
+    @Test
+    public void shouldThrowExceptionIfThereIsErrorInTimeLevel3(){
+        Composed c = new Composed("IS PREGADO", 100 , false );
+        Composed c1 = new Composed("IS-AVANZADA", 100 , false );
+        Composed c2 = new Composed("IS-MEDIA", 100 , false );
+        Composed c3 = new Composed("IS-BASICA", 100 , false );
+        c.add(c1);
+        c.add(c2);
+        c.add(c3);
+        c1.add(new Simple("AYPR", 10, 10));
+        c1.add(new Simple("MMIN", 10, 5));
+        c1.add(new Simple("LCAT", 10, 10));
+        c2.add(new Simple("AYED", 10, 7));
+        c2.add(new Simple("MBDA", 10, 9));
+        c2.add(new Simple("POOB", 10, 15));
+        c3.add(new Simple("CVDS", 10, 10));
+        c3.add(new Simple("ARSW", 10, -10));
+        try { 
+           int time=c.time();
+           fail("Did not throw exception");
+        } catch (ProjectException e) {
+            assertEquals(ProjectException.TIME_ERROR,e.getMessage());
+        }    
+    }     
+    
+    @Test
+    public void shouldThrowExceptionIfTimeIsNotKnownLevel3(){
+        Composed c = new Composed("IS PREGADO", 100 , false );
+        Composed c1 = new Composed("IS-AVANZADA", 100 , false );
+        Composed c2 = new Composed("IS-MEDIA", 100 , false );
+        Composed c3 = new Composed("IS-BASICA", 100 , false );
+        c.add(c1);
+        c.add(c2);
+        c.add(c3);
+        c1.add(new Simple("AYPR", 10, 10));
+        c1.add(new Simple("MMIN", 10, 10));
+        c1.add(new Simple("LCAT", 10, 10));
+        c2.add(new Simple("AYED", 10, 10));
+        c2.add(new Simple("MBDA", 10, 20));
+        c2.add(new Simple("POOB", 10, 15));
+        c3.add(new Simple("CVDS", 10, 10));
+        c3.add(new Simple("ARSW", 10, null));
+        try { 
+           int time=c.time();
+           fail("Did not throw exception");
+        } catch (ProjectException e) {
+            assertEquals(ProjectException.TIME_EMPTY,e.getMessage());
         }    
     }
 }
