@@ -66,7 +66,7 @@ public class Composed extends Activity{
         return totalTime;
     }
     
-    private int getTheMaximunTimeInActivitiesHandleException(int dUnknow, int dError, int dEmpty){
+    private int getTheMaximunTimeInActivities(int dUnknow, int dError, int dEmpty){
         int max = 0;
         for (Activity activity : activities){
             try{
@@ -89,7 +89,7 @@ public class Composed extends Activity{
         return max;
     }
     
-    private int getTheTimeSumOfActivitiesHandleException(int dUnknow, int dError, int dEmpty){
+    private int getTheTimeSumOfActivities(int dUnknow, int dError, int dEmpty){
         int sum = 0;
         for (Activity activity : activities){
             try{
@@ -120,10 +120,10 @@ public class Composed extends Activity{
     public int time(int dUnknow, int dError, int dEmpty){
         int totalTime = 0;
         if(parallel){
-            totalTime = getTheMaximunTimeInActivitiesHandleException(dUnknow, dError, dEmpty);
+            totalTime = getTheMaximunTimeInActivities(dUnknow, dError, dEmpty);
         }
         else{
-            totalTime = getTheTimeSumOfActivitiesHandleException(dUnknow, dError, dEmpty);
+            totalTime = getTheTimeSumOfActivities(dUnknow, dError, dEmpty);
         }
         return totalTime;
     }
@@ -133,44 +133,96 @@ public class Composed extends Activity{
      * @param modality ['A'(verage), 'M' (ax)] Use the average or maximum time of known activities to estimate unknown ones or those with error.
      * @return 
      * @throws ProjectException  IMPOSSIBLE, if it can't be calculated
-    */
-    public int time(char modality){
-        return 0;
-    } 
-    
-    /**
-     * 
-     * Calculates an time of a subactivity
-     * @return the duration of the subactivity
-     * @throws ProjectException UNKNOWN, if it doesn't exist. IMPOSSIBLE, if it can't be calculated
      */
-    public int time(String activityName) throws ProjectException{
-        Activity activity = findActivity(activityName);
-        if(activity == null){throw new ProjectException(ProjectException.UNKNOWN);}
-        try{
-            int time = activity.time();
-            return time;
+    public int time(char modality) throws ProjectException{
+        if(activities.size()==0) throw new ProjectException(ProjectException.IMPOSSIBLE);
+        if(modality=='A'){
+            return calculateTimeModalityA();
         }
-        catch(ProjectException e){
-            throw new ProjectException(ProjectException.IMPOSSIBLE);
+        if(modality=='M'){
+            return calculateTimeModalityM();
         }
+        return 0;
     }
     
-    /**
-     * Find the activity given the name of an activity
-     * @param the name of the activity
-     * @return the activity that matchs with the name
-     */
-    private Activity findActivity(String activityName){
-        Activity activity = null;
-        for(Activity act : activities){
-            if(act.name().equals(activityName)){
-                activity = act;
+    private int calculateTimeByType(int time, int otherTime){
+        if(parallel){return Math.max(time, otherTime);}
+        return time + otherTime;
+    }
+    
+    private int calculateTimeModalityA() throws ProjectException{
+        int time = 0;
+        int sumValue = 0;
+        int n = 0;
+        int unknown = 0;
+        for(Activity a: activities){
+            try{
+               int getTime = a.time();
+               time = calculateTimeByType(time, getTime);
+               sumValue += getTime;
+               n += 1;
+            }catch(ProjectException e){
+                unknown += 1;
             }
         }
-        return activity;
+        if(n==0){throw new ProjectException(ProjectException.IMPOSSIBLE);}
+        if(unknown == 0){return time;}
+        int average = sumValue/n;
+        if(parallel){time = Math.max(time, average);}
+        else{time += unknown*average;}
+        return time;
     }
     
+    private int calculateTimeModalityM() throws ProjectException{
+        int time = 0;
+        int unknown = 0;
+        int maxValue = 0;
+        for(Activity a: activities){
+            try{
+               int getTime = a.time();
+               time = calculateTimeByType(time, getTime);
+               maxValue = Math.max(maxValue,getTime);
+            }catch(ProjectException e){
+                unknown+=1;              
+            }
+        }
+        if(time==0){throw new ProjectException(ProjectException.IMPOSSIBLE);}
+        if(unknown==0){return time;}
+        if(!parallel){time += maxValue*unknown;}
+        return time;
+    }
+    
+     /**
+     * Calculates an time of a subactivity
+     * @return 
+     * @throws ProjectException UNKNOWN, if it doesn't exist. IMPOSSIBLE, if it can't be calculated
+     */
+    public int time(String activity) throws ProjectException{
+        for(Activity v: activities){
+            if(activity.equals(v.name)){
+                try{
+                    int time = v.time();
+                    return time;
+                }
+                catch(ProjectException e){
+                    throw new ProjectException(ProjectException.IMPOSSIBLE);
+                }
+            }
+            if(v instanceof Composed){
+                try{
+                    Composed composed = (Composed) v;
+                    return composed.time(activity);
+                }
+                catch(ProjectException e){
+                    if(e.getMessage().equals(ProjectException.IMPOSSIBLE)){
+                        throw new ProjectException(ProjectException.IMPOSSIBLE);
+                    }
+                }
+            }
+        }
+        throw new ProjectException(ProjectException.UNKNOWN);
+    }   
+
     @Override
     public String data() throws ProjectException{
         StringBuffer answer=new StringBuffer();
