@@ -56,7 +56,6 @@ public class ProjectManagerGUI extends JFrame{
         labels.add("Buscar", prepareSearchArea());
         add(labels);
         setSize(PREFERRED_DIMENSION);
-        
     }
 
 
@@ -93,7 +92,6 @@ public class ProjectManagerGUI extends JFrame{
      * Prepare area add
      * @return 
      */
-    
     private JPanel prepareAreaAdd(){
             
         Box fields = Box.createVerticalBox();
@@ -213,7 +211,6 @@ public class ProjectManagerGUI extends JFrame{
     
     private void  actionAdd(){
          project.add(name.getText().trim(),cost.getText().trim(),time.getText().trim(), basics.getText().trim());
-       
     }
 
     private void actionSearch(){

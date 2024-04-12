@@ -12,12 +12,15 @@ import java.util.HashMap;
 
 public class Project{
     private HashMap<String,Activity> activities;
-
+    private int simpleActivities;
+    private int composedActivities;
     /**
      * Create a Project
      */
     public Project(){
-        activities= new HashMap<String,Activity>();
+        activities = new HashMap<String,Activity>();
+        simpleActivities = 0;
+        composedActivities = 0;
         addSome();
     }
 
@@ -47,19 +50,23 @@ public class Project{
      * @param type
     */
     public void add(String name, String cost, String timeType, String theActivities){ 
-        Activity na;
+        Activity activity;
         if (theActivities.equals("")){
-           na=new Simple(name,cost.equals("") ? null : Integer.parseInt(cost),timeType.equals("") ? null : Integer.parseInt(timeType));
-        }else{ 
-            na = new Composed(name,cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? true : timeType.toUpperCase().charAt(0)=='P');
+           activity = new Simple(name, cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? null : Integer.parseInt(timeType));
+           simpleActivities += 1;
+        }
+        else{
+            // si empieza está vacío, por defecto es paralela. Si no, verifica que el primer caracter es 'P' para asignarle el resultado de la comparacion
+            activity = new Composed(name,cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? true : timeType.toUpperCase().charAt(0)=='P');
+            composedActivities += 1; 
             String [] aSimples= theActivities.split("\n");
             for (String b : aSimples){
-                ((Composed)na).add(activities.get(b.toUpperCase()));
+                ((Composed)activity).add(activities.get(b.toUpperCase()));
             }
         }
-        activities.put(name.toUpperCase(),na);
+        activities.put(name.toUpperCase(), activity);
     }
-
+    
     /**
      * Consults the activities that start with a prefix
      * @param  
@@ -67,7 +74,7 @@ public class Project{
      */
     
     public LinkedList<Activity> select(String prefix){
-        LinkedList <Activity> answers=null;
+        LinkedList <Activity> answers = null;
         prefix=prefix.toUpperCase();
         for(int i=0;i<activities.size();i++){
             if(activities.get(i).name().toUpperCase().startsWith(prefix.toUpperCase())){
@@ -117,7 +124,23 @@ public class Project{
      * Consult the number of activities
      * @return 
      */
-    public int numberActivitys(){
+    public int numberActivities(){
         return activities.size();
+    }
+    
+    /**
+     * Consult the number of activities
+     * @return 
+     */
+    public int numberComposedActivities(){
+        return composedActivities;
+    }
+    
+    /**
+     * Consult the number of activities
+     * @return 
+     */
+    public int numberSimpleActivities(){
+        return simpleActivities;
     }
 }

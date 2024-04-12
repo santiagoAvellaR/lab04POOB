@@ -70,8 +70,9 @@ public class Composed extends Activity{
         int max = 0;
         for (Activity activity : activities){
             try{
-                if (activity.time() > max){
-                    max = activity.time();
+                int activityTime = (activity instanceof Composed)?((Composed)activity).time(dUnknow, dError, dEmpty):activity.time(); 
+                if (activityTime > max){
+                    max = activityTime;
                 }
             }
             catch(ProjectException e){
@@ -93,7 +94,7 @@ public class Composed extends Activity{
         int sum = 0;
         for (Activity activity : activities){
             try{
-                sum += activity.time();
+                sum += (activity instanceof Composed)?((Composed)activity).time(dUnknow, dError, dEmpty):activity.time(); 
             }
             catch(ProjectException e){
                 if(e.getMessage().equals(ProjectException.TIME_EMPTY)){
