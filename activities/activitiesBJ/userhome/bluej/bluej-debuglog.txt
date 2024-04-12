@@ -45,3 +45,22 @@ Opening project: C:\Users\Asus\Downloads\lab04P\activities\activitiesBJ
 1712885344999: Listening for JDWP connection on address: javadebug
 Connected to debug VM via dt_shmem transport...
 Communication with debug VM fully established.
+java.net.SocketTimeoutException: Connect timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:546)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:597)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at java.base/sun.security.ssl.SSLSocketImpl.connect(SSLSocketImpl.java:304)
+	at org.apache.http.conn.ssl.SSLSocketFactory.connectSocket(SSLSocketFactory.java:524)
+	at org.apache.http.conn.ssl.SSLSocketFactory.connectSocket(SSLSocketFactory.java:403)
+	at org.apache.http.impl.conn.DefaultClientConnectionOperator.openConnection(DefaultClientConnectionOperator.java:177)
+	at org.apache.http.impl.conn.ManagedClientConnectionImpl.open(ManagedClientConnectionImpl.java:304)
+	at org.apache.http.impl.client.DefaultRequestDirector.tryConnect(DefaultRequestDirector.java:611)
+	at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:446)
+	at org.apache.http.impl.client.AbstractHttpClient.doExecute(AbstractHttpClient.java:863)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:82)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:106)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:57)
+	at bluej.collect.DataSubmitter.postData(DataSubmitter.java:177)
+	at bluej.collect.DataSubmitter.processQueue(DataSubmitter.java:133)
+	at bluej.collect.DataSubmitter$1.run(DataSubmitter.java:105)

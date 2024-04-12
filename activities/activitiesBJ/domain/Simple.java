@@ -13,7 +13,7 @@ public class Simple extends Activity{
        if (time == null) throw new ProjectException(ProjectException.TIME_EMPTY);
        if (time < 1 || time>24) throw new ProjectException(ProjectException.TIME_ERROR);
        return time;
-    }    
+    }
     
     @Override
     public int cost() throws ProjectException{

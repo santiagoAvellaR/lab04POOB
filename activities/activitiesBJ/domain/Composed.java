@@ -118,14 +118,13 @@ public class Composed extends Activity{
      * @return the time of the activity
      */
     public int time(int dUnknow, int dError, int dEmpty){
-        int totalTime = 0;
-        if(parallel){
-            totalTime = getTheMaximunTimeInActivities(dUnknow, dError, dEmpty);
+        if(activities.size()>=1){
+            if(parallel){
+                return getTheMaximunTimeInActivities(dUnknow, dError, dEmpty);
+            }
+            return getTheTimeSumOfActivities(dUnknow, dError, dEmpty);
         }
-        else{
-            totalTime = getTheTimeSumOfActivities(dUnknow, dError, dEmpty);
-        }
-        return totalTime;
+        return dEmpty;
     }
     
     /**
