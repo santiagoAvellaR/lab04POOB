@@ -115,7 +115,7 @@ public class Composed extends Activity{
      * @param dUnknown
      * @param dError
      * @param dEmpty
-     * @return 
+     * @return the time of the activity
      */
     public int time(int dUnknow, int dError, int dEmpty){
         int totalTime = 0;
@@ -135,83 +135,86 @@ public class Composed extends Activity{
      * @throws ProjectException  IMPOSSIBLE, if it can't be calculated
      */
     public int time(char modality) throws ProjectException{
-        if(activities.size()==0) throw new ProjectException(ProjectException.IMPOSSIBLE);
-        if(modality=='A'){
+        if(activities.size()==0){
+            throw new ProjectException(ProjectException.IMPOSSIBLE);
+        }
+        if(modality == 'A'){
             return calculateTimeModalityA();
         }
-        if(modality=='M'){
+        if(modality == 'M'){
             return calculateTimeModalityM();
         }
-        return 0;
+        return -500;
     }
     
-    private int calculateTimeByType(int time, int otherTime){
-        if(parallel){return Math.max(time, otherTime);}
-        return time + otherTime;
+    private int calculateTimeByType(int time1, int time2){
+        if(parallel){return Math.max(time1, time2);}
+        return time1 + time2;
     }
     
     private int calculateTimeModalityA() throws ProjectException{
-        int time = 0;
-        int sumValue = 0;
-        int n = 0;
-        int unknown = 0;
-        for(Activity a: activities){
+        int totalTime = 0;
+        int sumeTimeValidActivities = 0;
+        int ValidActivities = 0;
+        int unknownActivities = 0;
+        for(Activity activity: activities){
             try{
-               int getTime = a.time();
-               time = calculateTimeByType(time, getTime);
-               sumValue += getTime;
-               n += 1;
+               int activityTime = activity.time();
+               totalTime = calculateTimeByType(totalTime, activityTime);
+               sumeTimeValidActivities += activityTime;
+               ValidActivities += 1;
             }catch(ProjectException e){
-                unknown += 1;
+                unknownActivities += 1;
             }
         }
-        if(n==0){throw new ProjectException(ProjectException.IMPOSSIBLE);}
-        if(unknown == 0){return time;}
-        int average = sumValue/n;
-        if(parallel){time = Math.max(time, average);}
-        else{time += unknown*average;}
-        return time;
+        if(ValidActivities == 0){throw new ProjectException(ProjectException.IMPOSSIBLE);}
+        if(unknownActivities == 0){return totalTime;}
+        int average = sumeTimeValidActivities/ValidActivities;
+        if(parallel){totalTime = Math.max(totalTime, average);}
+        else{totalTime += unknownActivities * average;}
+        return totalTime;
     }
     
     private int calculateTimeModalityM() throws ProjectException{
-        int time = 0;
-        int unknown = 0;
+        int totalTime = 0;
+        int unknownActivities = 0;
         int maxValue = 0;
         for(Activity a: activities){
             try{
                int getTime = a.time();
-               time = calculateTimeByType(time, getTime);
-               maxValue = Math.max(maxValue,getTime);
+               totalTime = calculateTimeByType(totalTime, getTime);
+               maxValue = Math.max(maxValue, getTime);
             }catch(ProjectException e){
-                unknown+=1;              
+                unknownActivities += 1;              
             }
         }
-        if(time==0){throw new ProjectException(ProjectException.IMPOSSIBLE);}
-        if(unknown==0){return time;}
-        if(!parallel){time += maxValue*unknown;}
-        return time;
+        if(totalTime==0){throw new ProjectException(ProjectException.IMPOSSIBLE);}
+        if(unknownActivities == 0){return totalTime;}
+        if(!parallel){totalTime += maxValue * unknownActivities;}
+        return totalTime;
     }
     
      /**
      * Calculates an time of a subactivity
-     * @return 
+     * @param activity name
+     * @return time of the activity
      * @throws ProjectException UNKNOWN, if it doesn't exist. IMPOSSIBLE, if it can't be calculated
      */
-    public int time(String activity) throws ProjectException{
-        for(Activity v: activities){
-            if(activity.equals(v.name)){
+    public int time(String activityName) throws ProjectException{
+        for(Activity activity: activities){
+            if(activityName.equals(activity.name)){
                 try{
-                    int time = v.time();
+                    int time = activity.time();
                     return time;
                 }
                 catch(ProjectException e){
                     throw new ProjectException(ProjectException.IMPOSSIBLE);
                 }
             }
-            if(v instanceof Composed){
+            if(activity instanceof Composed){
                 try{
-                    Composed composed = (Composed) v;
-                    return composed.time(activity);
+                    Composed composed = (Composed) activity;
+                    return composed.time(activityName);
                 }
                 catch(ProjectException e){
                     if(e.getMessage().equals(ProjectException.IMPOSSIBLE)){
