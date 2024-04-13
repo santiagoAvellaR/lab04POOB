@@ -111,7 +111,7 @@ public class AcceptanceTest
             fail("Did not throw exception");
         }
         catch(ProjectException e){
-            assertEquals(ProjectException.NAME_ALREADY_USED,e.getMessage());
+            assertEquals(ProjectException.NAME_ALREADY_USED, e.getMessage());
         }
     }
     
@@ -119,7 +119,85 @@ public class AcceptanceTest
     // CASO #2: ¿Y si en precio o costo no da un número? ¿si el tipo no es paralelo o secuancial?
     // ------------- 1. Propongan una prueba de aceptación que genere el fallo.
     @Test
-    public void aceptationTestNumber3(){
+    public void aceptationTest3InvalidType(){
+        try{
+            // el usuario añade una actividad simple
+            project.add("Desayunar","10","10", "" );
+            assertEquals(4, defaultSimpleActivities + 1);
+            // el usuario añade una actividad simple
+            project.add("Bañarse","10","10", "" );
+            assertEquals(5, defaultSimpleActivities + 2);
+            // el usuario añade una actividad simple
+            project.add("Cambiarse","10","10", "" );
+            assertEquals(6, defaultSimpleActivities + 3);
+            // el usuario considera que las 3 primeras actividades que ingresó hacen parte de una actividad más grande llamada "Alistarse para salir"
+            // por lo que añade una actividad compuesta, secuencial, con las 3 actividades de antes
+            project.add("Alistarse para salir", "80", "Regular", "Desayunar\nBañarse\nCambiarse");
+            fail("Did not throw exception");
+        }
+        catch(ProjectException e){
+            assertEquals(ProjectException.INVALID_TYPE, e.getMessage());
+        }
+    }
+    
+    @Test
+    public void aceptationTest4InvalidCostSecuencial(){
+        try{
+            // el usuario añade una actividad simple
+            project.add("Desayunar","10","10", "" );
+            assertEquals(4, defaultSimpleActivities + 1);
+            // el usuario añade una actividad simple
+            project.add("Bañarse","10","10", "" );
+            assertEquals(5, defaultSimpleActivities + 2);
+            // el usuario añade una actividad simple
+            project.add("Cambiarse","10","10", "" );
+            assertEquals(6, defaultSimpleActivities + 3);
+            // el usuario considera que las 3 primeras actividades que ingresó hacen parte de una actividad más grande llamada "Alistarse para salir"
+            // por lo que añade una actividad compuesta, secuencial, con las 3 actividades de antes
+            project.add("Alistarse para salir", "hola", "Secuencial", "Desayunar\nBañarse\nCambiarse");
+            fail("Did not throw exception");
+        }
+        catch(ProjectException e){
+            assertEquals(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS, e.getMessage());
+        }
+    }
+    
+    @Test
+    public void aceptationTest4InvalidCostParalela(){
+        try{
+            // el usuario añade una actividad simple
+            project.add("Desayunar","10","10", "" );
+            assertEquals(4, defaultSimpleActivities + 1);
+            // el usuario añade una actividad simple
+            project.add("Bañarse","10","10", "" );
+            assertEquals(5, defaultSimpleActivities + 2);
+            // el usuario añade una actividad simple
+            project.add("Cambiarse","10","10", "" );
+            assertEquals(6, defaultSimpleActivities + 3);
+            // el usuario considera que las 3 primeras actividades que ingresó hacen parte de una actividad más grande llamada "Alistarse para salir"
+            // por lo que añade una actividad compuesta, secuencial, con las 3 actividades de antes
+            project.add("Alistarse para salir", "como", "Paralela", "Desayunar\nBañarse\nCambiarse");
+            fail("Did not throw exception");
+        }
+        catch(ProjectException e){
+            assertEquals(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS, e.getMessage());
+        }
+    }
+    
+    @Test
+    public void aceptationTest5InvalidTimeSimple(){
+        try{
+            // el usuario añade una actividad simple
+            project.add("Desayunar","10","10", "" );
+            assertEquals(4, defaultSimpleActivities + 1);
+            // el usuario añade una actividad simple
+            project.add("Bañarse","10","sin tiempo", "" );
+            assertEquals(5, defaultSimpleActivities + 2);
+            fail("Did not throw exception");
+        }
+        catch(ProjectException e){
+            assertEquals(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS, e.getMessage());
+        }
     }
     
     // ------------- Adicionar una actividad.  Funcionalidad robusto
@@ -127,5 +205,37 @@ public class AcceptanceTest
     // ------------- 1. Propongan una prueba de aceptación que genere el fallo. 
     @Test
     public void aceptationTestNumber4(){
+        try{
+            // el usuario añade una actividad simple
+            project.add("Desayunar","10","10", "" );
+            assertEquals(4, defaultSimpleActivities + 1);
+            // el usuario añade una actividad simple
+            project.add("Bañarse","10","10", "" );
+            assertEquals(5, defaultSimpleActivities + 2);
+            // el usuario añade una actividad simple
+            project.add("Cambiarse","10","10", "" );
+            assertEquals(6, defaultSimpleActivities + 3);
+            // el usuario considera que las 3 primeras actividades que ingresó hacen parte de una actividad más grande llamada "Alistarse para salir"
+            // por lo que añade una actividad compuesta, secuencial, con las 3 actividades de antes
+            project.add("Alistarse para salir", "80", "Secuencial", "Desayunar\nBañarse\nCambiarse");
+            assertEquals(2, defaultComposedActivities + 1);
+            // el usuario añade una actividad simple
+            project.add("Tomar el SITP","10","10", "" );
+            assertEquals(7, defaultSimpleActivities + 4);
+            // el usuario añade una actividad simple
+            project.add("Bajarse en jardines","10","10", "" );
+            assertEquals(8, defaultSimpleActivities + 5);
+            // el usuario considera que las 2 anteriores actividades que ingresó hacen parte de una actividad más grande llamada "Ir a la universidad"
+            // por lo que añade una actividad compuesta, secuencial, con las 2 ultimas actividades
+            project.add("Ir a la universidad", "80", "Secuencial", "Tomar el SITP\nBajarse en jardines");
+            assertEquals(3, defaultComposedActivities + 2);
+            // el usuario se le olvida añadir la actividad "Presentar exposicion"
+            // y la quería añadir a la actividad de "Tareas pendientes"
+            project.add("Hacer tareas", "80", "Secuencial", "Presentar exposicion");
+            fail("Did not throw exception");
+        }
+        catch(ProjectException e){
+            assertEquals(ProjectException.THE_SUBACTIVITY_NOT_EXISTS, e.getMessage());
+        }
     }
 }

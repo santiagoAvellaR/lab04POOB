@@ -172,7 +172,7 @@ public class Composed extends Activity{
         int average = sumeTimeValidActivities/ValidActivities;
         if(parallel){totalTime = Math.max(totalTime, average);}
         else{totalTime += unknownActivities * average;}
-        return totalTime;
+        return average;
     }
     
     private int calculateTimeModalityM() throws ProjectException{
@@ -189,9 +189,9 @@ public class Composed extends Activity{
             }
         }
         if(totalTime==0){throw new ProjectException(ProjectException.IMPOSSIBLE);}
-        if(unknownActivities == 0){return totalTime;}
+        if(unknownActivities == 0){return maxValue;}
         if(!parallel){totalTime += maxValue * unknownActivities;}
-        return totalTime;
+        return maxValue;
     }
     
      /**

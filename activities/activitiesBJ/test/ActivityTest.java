@@ -79,7 +79,6 @@ public class ActivityTest{
             assertEquals(ProjectException.TIME_EMPTY,e.getMessage());
         }    
     }
-    
     /*LEVEL 3*/
     @Test
     public void shouldCalculateTheTimeOfAComposedSecuencialActivityLevel3(){
@@ -260,7 +259,6 @@ public class ActivityTest{
             fail("Did not throw exception");
         }    
     }
-    
     @Test
     public void shouldReturnTheTimeOfASubActivityLevel3(){
         Composed c = new Composed("IS PREGADO", 100 , false );
@@ -285,7 +283,6 @@ public class ActivityTest{
             fail("Did not throw exception");
         }    
     }
-    
     @Test
     public void shouldThrowUNKOWNException(){
         Composed c = new Composed("IS PREGADO", 100 , false );
@@ -310,7 +307,6 @@ public class ActivityTest{
             assertEquals(e.getMessage(), ProjectException.UNKNOWN);
         }    
     }
-    
     @Test
     public void shouldThrowIMPOSSIBLEExceptionComposedEmpty(){
         Composed c = new Composed("IS PREGADO", 100 , false );
@@ -333,7 +329,6 @@ public class ActivityTest{
             assertEquals(e.getMessage(), ProjectException.IMPOSSIBLE);
         }    
     }
-    
     @Test
     public void shouldThrowUNKOWNExceptionNullValues(){
         Composed c = new Composed("IS PREGADO", 100 , false );
@@ -358,7 +353,6 @@ public class ActivityTest{
             assertEquals(e.getMessage(), ProjectException.IMPOSSIBLE);
         }    
     }
-    
     @Test
     public void shouldThrowUNKOWNExceptionValuesOutOfRange(){
         Composed c = new Composed("IS PREGADO", 100 , false );
@@ -382,5 +376,40 @@ public class ActivityTest{
         } catch (ProjectException e) {
             assertEquals(e.getMessage(), ProjectException.IMPOSSIBLE);
         }    
+    }
+    
+    /*-------- TEST METHOD ------ time(char modality)*/
+    @Test
+    public void shouldModalityImpossible(){
+        Composed c = new Composed("IS-BASICA", 100 , false );
+        try { 
+           int time=c.time('A');
+           fail("Did not throw exception");
+        } catch (ProjectException e) {
+            assertEquals(ProjectException.IMPOSSIBLE,e.getMessage());
+        }   
+    }
+    @Test
+    public void shouldModalityImpossible2(){
+        Composed c = new Composed("IS-BASICA", 100 , false );
+        c.add(new Simple("AYPR", 10, -10));
+        c.add(new Simple("ARSW", 10, null));
+        try { 
+           int time=c.time('M');
+           fail("Did not throw exception");
+        } catch (ProjectException e) {
+            assertEquals(ProjectException.IMPOSSIBLE,e.getMessage());
+        }   
+    }
+    @Test
+    public void shouldModalityResult(){
+        Composed c = new Composed("IS-BASICA", 100 , false );
+        c.add(new Simple("LCAT", 10, -5));
+        c.add(new Simple("AYED", 10, 10));
+        try {
+           assertEquals(10,c.time('A'));
+        } catch (ProjectException e){
+            fail("Threw a exception");
+        }  
     }
 }

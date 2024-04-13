@@ -51,19 +51,24 @@ public class Project{
     */
     public void add(String name, String cost, String timeType, String theActivities) throws ProjectException{ 
         Activity activity;
+        if(!(cost.matches("[0-9]+") && !cost.isEmpty())){
+            throw new ProjectException(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS);
+        }
         if(activities.containsKey(name.toUpperCase())){
             throw new ProjectException(ProjectException.NAME_ALREADY_USED);
         }
         if (theActivities.equals("")){
-           if(!(cost.matches("[0-9]+") && !cost.equals("") && timeType.matches("[0-9]+") && !timeType.equals(""))){
+           if(!(timeType.matches("[0-9]+") && !timeType.isEmpty())){
                throw new ProjectException(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS);
            }
            activity = new Simple(name, cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? null : Integer.parseInt(timeType));
            simpleActivities += 1;
         }
         else{
-            // si empieza está vacío, por defecto es paralela. Si no, verifica que el primer caracter es 'P' para asignarle el resultado de la comparacion
-            activity = new Composed(name,cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? true : timeType.toUpperCase().charAt(0)=='P');
+            if(!(timeType.toUpperCase().equals("PARALELA") || timeType.toUpperCase().equals("SECUENCIAL"))){
+                throw new ProjectException(ProjectException.INVALID_TYPE);
+            }
+            activity = new Composed(name,cost.equals("") ? null : Integer.parseInt(cost), timeType.toUpperCase().equals("PARALELA") ? true : false);
             composedActivities += 1; 
             String [] aSimples= theActivities.split("\n");
             for (String b : aSimples){

@@ -18,7 +18,7 @@ public class ProjectException extends Exception
     public static final String NAME_ALREADY_USED = "The name is already used";
     public static final String THE_SUBACTIVITY_NOT_EXISTS = "A sub-activity that compose the composed activity don't exists";
     public static final String COST_AND_TIME_ARE_NOT_NUMBERS = "Cost and time should be numerous ";
-    public static final String INVALID_TYPE = "The type cannot be different from “Paralelo” or “Secuencial";
+    public static final String INVALID_TYPE = "The type cannot be different from “Paralela” or “Secuencial";
     /**
      * Constructor for objects of class ProjectException
      */
