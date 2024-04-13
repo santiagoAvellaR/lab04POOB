@@ -90,11 +90,11 @@ public class Project{
      * @return  
      */
     public String data(LinkedList<Activity> selected){
-        StringBuffer answer=new StringBuffer();
-        answer.append(activities.size()+ " actividades\n");
-        for(Activity p : selected) {
+        StringBuffer answer = new StringBuffer();
+        answer.append(activities.size() + " actividades\n");
+        for(Activity activity : selected) {
             try{
-                answer.append('>' + p.data());
+                answer.append('>' + activity.data());
                 answer.append("\n");
             }catch(ProjectException e){
                 answer.append("**** "+e.getMessage());
