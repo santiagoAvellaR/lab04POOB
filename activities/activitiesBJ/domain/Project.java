@@ -51,10 +51,11 @@ public class Project{
     */
     public void add(String name, String cost, String timeType, String theActivities) throws ProjectException{ 
         Activity activity;
-        
+        if(activities.containsKey(name.toUpperCase())){
+            throw new ProjectException(ProjectException.NAME_ALREADY_USED);
+        }
         if (theActivities.equals("")){
-           if((!(cost.matches("[^0-9]+")) && !cost.equals("")) || (!(timeType.matches("[^0-9]+")) && !timeType.equals("")))
-           {
+           if(!(cost.matches("[0-9]+") && !cost.equals("") && timeType.matches("[0-9]+") && !timeType.equals(""))){
                throw new ProjectException(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS);
            }
            activity = new Simple(name, cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? null : Integer.parseInt(timeType));
@@ -62,19 +63,15 @@ public class Project{
         }
         else{
             // si empieza está vacío, por defecto es paralela. Si no, verifica que el primer caracter es 'P' para asignarle el resultado de la comparacion
-            if(timeType.toUpperCase() != "PARALELA" || timeType.toUpperCase() != "SECUENCIAL")
-            {
-                throw new ProjectException(ProjectException.INVALID_TYPE);
-            }
             activity = new Composed(name,cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? true : timeType.toUpperCase().charAt(0)=='P');
             composedActivities += 1; 
             String [] aSimples= theActivities.split("\n");
             for (String b : aSimples){
+                if(!activities.containsKey(b.toUpperCase())){
+                    throw new ProjectException(ProjectException.THE_SUBACTIVITY_NOT_EXISTS);
+                }
                 ((Composed)activity).add(activities.get(b.toUpperCase()));
             }
-        }
-        if(activities.containsKey(name.toUpperCase())){
-            throw new ProjectException(ProjectException.NAME_ALREADY_USED);
         }
         activities.put(name.toUpperCase(), activity);
     }
