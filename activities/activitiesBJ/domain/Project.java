@@ -143,4 +143,8 @@ public class Project{
     public int numberSimpleActivities(){
         return simpleActivities;
     }
+    
+    public LinkedList<Activity> linkedListOfActivitiesValues(){
+        return (new LinkedList<>(activities.values()));
+    }
 }

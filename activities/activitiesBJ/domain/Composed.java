@@ -229,7 +229,7 @@ public class Composed extends Activity{
     @Override
     public String data() throws ProjectException{
         StringBuffer answer=new StringBuffer();
-        answer.append(name+". Tipo "+ (parallel ? "Paralela": "Secuencial")+". ");
+        answer.append(name+". Tipo "+ (parallel ? "Paralela": "Secuencial")+".");
         for(Activity b: activities) {
             answer.append("\n\t"+b.data());
         }

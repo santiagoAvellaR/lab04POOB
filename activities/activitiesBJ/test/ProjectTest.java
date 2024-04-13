@@ -1,6 +1,7 @@
 package test;
 
 import domain.*;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
@@ -109,5 +110,24 @@ public class ProjectTest
         assertEquals(defaultActivities + 9, 13);
         assertEquals(defaultSimpleActivities + 6, 9);
         assertEquals(defaultComposedActivities + 3, 4);
+    }
+    
+    //-------- TEST data(LinkedList<Activity> selected) -----------------------
+    @Test
+    public void shouldReturnTheDataOfTheDefaultActivities(){
+        assertEquals("4 actividades\n>Buscar datos. Costo:50.Tiempo:50\n>Limpiar datos. Costo:100.Tiempo:100\n>Evaluar datos. Costo:80.Tiempo:80\n>Preparar datos. Tipo Secuencial.\n\tBuscar datos. Costo:50.Tiempo:50\n\tEvaluar datos. Costo:80.Tiempo:80\n\tLimpiar datos. Costo:100.Tiempo:100\n",
+        project.data(project.linkedListOfActivitiesValues()).toString());
+    }
+    @Test
+    public void shouldReturnTheDataOfASimpleActivity(){
+        project.add("Desayunar","10","10", "" );
+        assertEquals("5 actividades\n>Buscar datos. Costo:50.Tiempo:50\n>Limpiar datos. Costo:100.Tiempo:100\n>Desayunar. Costo:10.Tiempo:10\n>Evaluar datos. Costo:80.Tiempo:80\n>Preparar datos. Tipo Secuencial.\n\tBuscar datos. Costo:50.Tiempo:50\n\tEvaluar datos. Costo:80.Tiempo:80\n\tLimpiar datos. Costo:100.Tiempo:100\n",
+        project.data(project.linkedListOfActivitiesValues()).toString());
+    }
+    @Test
+    public void shouldReturnTheDataOfAComposedActivity(){
+        project.add("Ir a la universidad", "80", "Secuencial", "Buscar datos");
+        assertEquals("5 actividades\n>Ir a la universidad. Tipo Secuencial.\n\tBuscar datos. Costo:50.Tiempo:50\n>Buscar datos. Costo:50.Tiempo:50\n>Limpiar datos. Costo:100.Tiempo:100\n>Evaluar datos. Costo:80.Tiempo:80\n>Preparar datos. Tipo Secuencial.\n\tBuscar datos. Costo:50.Tiempo:50\n\tEvaluar datos. Costo:80.Tiempo:80\n\tLimpiar datos. Costo:100.Tiempo:100\n",
+        project.data(project.linkedListOfActivitiesValues()).toString());
     }
 }
