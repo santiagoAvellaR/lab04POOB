@@ -14,7 +14,9 @@ public class ProjectException extends Exception
     public static final String COMPOSED_EMPTY = "The composed activities must have activities related with them";
     public static final String IMPOSSIBLE = "It's impossible calculate the time of the activity";
     public static final String UNKNOWN = "The activity doesn't exists";
-
+    public static final String NAME_ALREADY_USED = "The name is already used";
+    public static final String COST_AND_TIME_ARE_NOT_NUMBERS = "Cost and time should be numerous ";
+    public static final String INVALID_TYPE = "The type cannot be different from “Paralelo” or “Secuencial";
     /**
      * Constructor for objects of class ProjectException
      */

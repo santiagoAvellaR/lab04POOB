@@ -1,4 +1,3 @@
-
 package presentation; 
  
 import domain.*;
@@ -36,7 +35,7 @@ public class ProjectManagerGUI extends JFrame{
     private JTextField textSearch;
     private JTextArea textResults;
     
-    private ProjectManagerGUI(){
+    private ProjectManagerGUI() throws ProjectException {
         project=new Project();
         prepareElements();
         prepareActions();
@@ -211,7 +210,23 @@ public class ProjectManagerGUI extends JFrame{
     }
     
     private void  actionAdd(){
-         project.add(name.getText().trim(),cost.getText().trim(),time.getText().trim(), basics.getText().trim());
+        try{
+                 project.add(name.getText().trim(),cost.getText().trim(),time.getText().trim(), basics.getText().trim());
+        }catch(ProjectException e)
+        {
+            if(e.getMessage().equals(ProjectException.NAME_ALREADY_USED))
+            {
+                 JOptionPane.showMessageDialog(this, "Ha ocurrido un error durante la adición: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } 
+            else if(e.getMessage().equals(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS))
+            {
+                 JOptionPane.showMessageDialog(this, "Ha ocurrido un error durante la adición: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else if((e.getMessage().equals(ProjectException.INVALID_TYPE)))
+            {
+                 JOptionPane.showMessageDialog(this, "Ha ocurrido un error durante la adición: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void actionSearch(){
@@ -223,7 +238,7 @@ public class ProjectManagerGUI extends JFrame{
         textResults.setText(answer);
     }
     
-    public static void main(String args[]){
+    public static void main(String args[]) throws ProjectException {
        ProjectManagerGUI gui=new ProjectManagerGUI();
        gui.setVisible(true);
     }    

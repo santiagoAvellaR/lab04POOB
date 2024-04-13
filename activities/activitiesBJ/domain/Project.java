@@ -1,5 +1,5 @@
 package domain; 
-
+import java.lang.String.*;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,14 +17,14 @@ public class Project{
     /**
      * Create a Project
      */
-    public Project(){
+    public Project() throws ProjectException{
         activities = new HashMap<String,Activity>();
         simpleActivities = 0;
         composedActivities = 0;
         addSome();
     }
 
-    private void addSome(){
+    private void addSome() throws ProjectException {
         String [][] activities= {{"Buscar datos","50","50", "" },
                                  {"Evaluar datos","80","80",""},
                                  {"Limpiar datos","100","100",""},
@@ -49,20 +49,32 @@ public class Project{
      * @param time
      * @param type
     */
-    public void add(String name, String cost, String timeType, String theActivities){ 
+    public void add(String name, String cost, String timeType, String theActivities) throws ProjectException{ 
         Activity activity;
+        
         if (theActivities.equals("")){
+           if((!(cost.matches("[^0-9]+")) && !cost.equals("")) || (!(timeType.matches("[^0-9]+")) && !timeType.equals("")))
+           {
+               throw new ProjectException(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS);
+           }
            activity = new Simple(name, cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? null : Integer.parseInt(timeType));
            simpleActivities += 1;
         }
         else{
             // si empieza está vacío, por defecto es paralela. Si no, verifica que el primer caracter es 'P' para asignarle el resultado de la comparacion
+            if(timeType.toUpperCase() != "PARALELA" || timeType.toUpperCase() != "SECUENCIAL")
+            {
+                throw new ProjectException(ProjectException.INVALID_TYPE);
+            }
             activity = new Composed(name,cost.equals("") ? null : Integer.parseInt(cost), timeType.equals("") ? true : timeType.toUpperCase().charAt(0)=='P');
             composedActivities += 1; 
             String [] aSimples= theActivities.split("\n");
             for (String b : aSimples){
                 ((Composed)activity).add(activities.get(b.toUpperCase()));
             }
+        }
+        if(activities.containsKey(name.toUpperCase())){
+            throw new ProjectException(ProjectException.NAME_ALREADY_USED);
         }
         activities.put(name.toUpperCase(), activity);
     }
@@ -97,7 +109,7 @@ public class Project{
                 answer.append('>' + activity.data());
                 answer.append("\n");
             }catch(ProjectException e){
-                answer.append("**** "+e.getMessage());
+                answer.append("** "+e.getMessage());
             }
         }    
         return answer.toString();
