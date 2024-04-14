@@ -144,4 +144,118 @@ public class ProjectTest
         }
         catch(ProjectException e){fail("Threw a exception");}
     }
+    
+    //----- TEST NAME_ALREADY_USED ------------------
+    @Test
+    public void shouldExceptionNameAlreadyUsed(){
+        try{
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Desayunar","10","Secuencial", "Bañarse\nCambiarse" );    
+            project.add("Desayunar","10","5", "" );
+            fail("Threw a exception");
+        }catch(ProjectException e){
+             assertEquals(ProjectException.NAME_ALREADY_USED,e.getMessage());
+        }
+    }
+    @Test
+    public void shouldNotExceptionNameAlreadyUsed(){
+        try{
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Tomar el SITP","10","10", "" );
+            project.add("salir","10","5", "" );    
+        }catch(ProjectException e){
+             fail("Threw a exception");
+        }
+    }
+    
+    //----- TEST THE_SUBACTIVITY_NOT_EXISTS ------------------
+    @Test
+    public void shouldThrowExceptionSubactivity(){
+        try{
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Desayunar","10","Secuencial", "Bañarse\nCambiarse\nTomar el SITP" );
+            fail("Threw a exception");
+        }catch(ProjectException e){
+             assertEquals(ProjectException.THE_SUBACTIVITY_NOT_EXISTS,e.getMessage());
+        }
+    }
+    @Test
+    public void shouldNotThrowExceptionSubactivity(){
+        try{
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Tomar el SITP","10","10", "" );
+            project.add("Desayunar","10","Secuencial", "Bañarse\nCambiarse\nTomar el SITP" );        
+        }catch(ProjectException e){
+             fail("Threw a exception");
+        }
+    }
+    
+    //----- TEST COST_AND_TIME_ARE_NOT_NUMBERS ------------------
+    @Test
+    public void shouldExceptionCostIsNotNumbers(){
+        try{
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Desayunar","10","Secuencial", "Bañarse\nCambiarse" );    
+            project.add("Despedirse","hola","5", "" );
+            fail("Did not throw exception");
+        }catch(ProjectException e){
+             assertEquals(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS,e.getMessage());
+        }
+    }
+    @Test
+    public void shouldExceptionTimeIsNotNumbers(){
+        try{
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Tomar el SITP","10","10", "" );
+            project.add("salir","10","ADIOS", "" );
+            fail("Did not throw exception");
+        }catch(ProjectException e){
+            assertEquals(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS,e.getMessage());
+        }
+    }
+    
+    //----- TEST INVALID_TYPE ------------------
+    @Test
+    public void shouldThrowInvalidType(){
+        try{
+            project.add("Desayunar","10","10", "" );
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Alistarse para salir", "80", "Regular", "Desayunar\nBañarse\nCambiarse");
+            fail("Did not throw exception");
+        }
+        catch(ProjectException e){
+            assertEquals(ProjectException.INVALID_TYPE, e.getMessage());
+        }
+    }
+    @Test
+    public void shouldNotThrowInvalidType(){
+        try{
+            project.add("Desayunar","10","10", "" );
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Alistarse para salir", "80", "Paralela", "Desayunar\nBañarse\nCambiarse");
+        }
+        catch(ProjectException e){
+            fail("Threw a exception");
+        }
+    }
+    @Test
+    public void shouldNotThrowInvalidType2(){
+        try{
+            project.add("Desayunar","10","10", "" );
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );
+            project.add("Alistarse para salir", "80", "Secuencial", "Desayunar\nBañarse\nCambiarse");
+        }
+        catch(ProjectException e){
+            fail("Threw a exception");
+        }
+    }
 }

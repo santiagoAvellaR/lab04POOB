@@ -17,7 +17,8 @@ public class ProjectManagerGUI extends JFrame{
     private static final Dimension PREFERRED_DIMENSION =
                          new Dimension(PREFERRED_WIDTH,PREFERRED_HIGH);
     private Project project;
-
+    private Log log;
+    
     /*List*/
     private JButton buttonList;
     private JButton buttonRestartList;
@@ -222,6 +223,9 @@ public class ProjectManagerGUI extends JFrame{
             }
             else if((e.getMessage().equals(ProjectException.THE_SUBACTIVITY_NOT_EXISTS))){
                 JOptionPane.showMessageDialog(this, "An error occurred during the addition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                log.record(e);
             }
         }
     }
