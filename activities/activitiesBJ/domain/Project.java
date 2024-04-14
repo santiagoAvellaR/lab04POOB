@@ -87,11 +87,11 @@ public class Project{
      * @return 
      */
     public LinkedList<Activity> select(String prefix) throws ProjectException{
-        LinkedList <Activity> answers = null;
+        LinkedList <Activity> answers = new LinkedList<Activity>();
         prefix = prefix.toUpperCase();
-        for(int i = 0; i < activities.size(); i++){
-            if(activities.get(i).name().toUpperCase().startsWith(prefix.toUpperCase())){
-                answers.add(activities.get(i));
+        for(String key : activities.keySet().toArray(new String[0])){
+            if(activities.get(key).name().toUpperCase().startsWith(prefix.toUpperCase())){
+                answers.add(activities.get(key));
             }   
         }
         if(answers.size() <= 0){
@@ -107,7 +107,7 @@ public class Project{
      */
     public String data(LinkedList<Activity> selected){
         StringBuffer answer = new StringBuffer();
-        answer.append(activities.size() + " actividades\n");
+        answer.append(selected.size() + " actividades\n");
         for(Activity activity : selected) {
             try{
                 answer.append('>' + activity.data());

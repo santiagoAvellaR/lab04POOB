@@ -258,4 +258,52 @@ public class ProjectTest
             fail("Threw a exception");
         }
     }
+    
+    //----- TEST search() ------------------
+    @Test
+    public void ShouldNotThrowExceptionInSearch(){
+        try{
+            project.add("Desayunar","10","10", "" );
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );    
+            project.search("Cambiarse");
+        }catch(ProjectException e){
+              fail("Threw a exception");
+        }
+    }
+    @Test
+    public void ShouldNotThrowExceptionInSearch2(){
+        try{
+            project.add("Desayunar","10","10", "" );
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );    
+            project.search("Bañarse");
+        }catch(ProjectException e){
+              fail("Threw a exception");
+        }
+    }
+     @Test
+    public void ShouldThrowExceptionInSearch(){
+        try{
+            project.add("Desayunar","10","10", "" );
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );    
+            project.search("Ordenar");
+            fail("Did not throw exception");
+        }catch(ProjectException e){
+              assertEquals(ProjectException.ACTIVITY_NOT_FOUND, e.getMessage());
+        }
+    }
+    @Test
+    public void ShouldThrowExceptionInSearch2(){
+        try{
+            project.add("Desayunar","10","10", "" );
+            project.add("Bañarse","10","10", "" );
+            project.add("Cambiarse","10","10", "" );    
+            project.search("Jugar");
+            fail("Did not throw exception");
+        }catch(ProjectException e){
+              assertEquals(ProjectException.ACTIVITY_NOT_FOUND, e.getMessage());
+        }
+    }
 }

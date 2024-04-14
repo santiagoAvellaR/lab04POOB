@@ -237,14 +237,14 @@ public class ProjectManagerGUI extends JFrame{
             }
             else{
                 JOptionPane.showMessageDialog(this, "An error occurred, we are sorry: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                log.record(e);
             }
-            log.record(e);
         }
     }
 
     private void actionSearch(){
         try{
-            String pattern = textSearch.getText();
+            String pattern = textSearch.getText().toString();
             String answer = "";
             if(pattern.length() > 0) {
                 answer = project.search(pattern);
@@ -253,12 +253,12 @@ public class ProjectManagerGUI extends JFrame{
         }
         catch(Exception e){
             if(e.getMessage().equals(ProjectException.ACTIVITY_NOT_FOUND)){
-                JOptionPane.showMessageDialog(this, "An error occurred during the addition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "An error occurred during the searching: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             else{
                 JOptionPane.showMessageDialog(this, "An error occurred, we are sorry: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                log.record(e);
             }
-            log.record(e);
         }
     }
     
