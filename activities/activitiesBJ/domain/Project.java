@@ -86,13 +86,16 @@ public class Project{
      * @param  
      * @return 
      */
-    public LinkedList<Activity> select(String prefix){
+    public LinkedList<Activity> select(String prefix) throws ProjectException{
         LinkedList <Activity> answers = null;
         prefix = prefix.toUpperCase();
         for(int i = 0; i < activities.size(); i++){
             if(activities.get(i).name().toUpperCase().startsWith(prefix.toUpperCase())){
                 answers.add(activities.get(i));
             }   
+        }
+        if(answers.size() <= 0){
+            throw new ProjectException(ProjectException.ACTIVITY_NOT_FOUND);
         }
         return answers;
     }
@@ -121,7 +124,7 @@ public class Project{
      * @param prefix
      * @return  
      */ 
-    public String search(String prefix){
+    public String search(String prefix) throws ProjectException{
         return data(select(prefix));
     }
     

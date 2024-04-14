@@ -35,6 +35,7 @@ public class ProjectManagerGUI extends JFrame{
     /*Search*/
     private JTextField textSearch;
     private JTextArea textResults;
+    private JButton buttonSearch;
     
     private ProjectManagerGUI() throws ProjectException {
         project=new Project();
@@ -134,7 +135,9 @@ public class ProjectManagerGUI extends JFrame{
         search.add(new JLabel("Buscar", JLabel.LEFT));
         textSearch = new JTextField(50);
         search.add(textSearch);
-        
+        JPanel botones = new JPanel();
+        buttonSearch = new JButton("Buscar");
+        botones.add(buttonSearch);
         textResults = new JTextArea(10,50);
         textResults.setEditable(false);
         textResults.setLineWrap(true);
@@ -147,7 +150,7 @@ public class ProjectManagerGUI extends JFrame{
         panel.setLayout(new BorderLayout());
         panel.add(search, BorderLayout.NORTH);
         panel.add(scrollArea, BorderLayout.CENTER);
-
+        panel.add(botones, BorderLayout.SOUTH);
         return panel;
     }
 
@@ -190,6 +193,13 @@ public class ProjectManagerGUI extends JFrame{
         });
         
         /*Search*/
+        buttonSearch.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev){
+                actionSearch();
+            }
+        });
+        
+        /*
         textSearch.getDocument().addDocumentListener(new DocumentListener(){
             public void changedUpdate(DocumentEvent ev){
                 actionSearch();
@@ -203,6 +213,7 @@ public class ProjectManagerGUI extends JFrame{
                 actionSearch();
             }
         });
+        */
     }    
 
     
@@ -225,18 +236,30 @@ public class ProjectManagerGUI extends JFrame{
                 JOptionPane.showMessageDialog(this, "An error occurred during the addition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             else{
-                log.record(e);
+                JOptionPane.showMessageDialog(this, "An error occurred, we are sorry: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+            log.record(e);
         }
     }
 
     private void actionSearch(){
-        String pattern=textSearch.getText();
-        String answer = "";
-        if(pattern.length() > 0) {
-            answer = project.search(pattern);
+        try{
+            String pattern = textSearch.getText();
+            String answer = "";
+            if(pattern.length() > 0) {
+                answer = project.search(pattern);
+            }
+            textResults.setText(answer);
         }
-        textResults.setText(answer);
+        catch(Exception e){
+            if(e.getMessage().equals(ProjectException.ACTIVITY_NOT_FOUND)){
+                JOptionPane.showMessageDialog(this, "An error occurred during the addition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "An error occurred, we are sorry: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            log.record(e);
+        }
     }
     
     public static void main(String args[]) throws ProjectException {

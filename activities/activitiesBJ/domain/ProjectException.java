@@ -19,6 +19,8 @@ public class ProjectException extends Exception
     public static final String THE_SUBACTIVITY_NOT_EXISTS = "A sub-activity that compose the composed activity don't exists";
     public static final String COST_AND_TIME_ARE_NOT_NUMBERS = "Cost and time should be numerous ";
     public static final String INVALID_TYPE = "The type cannot be different from “Paralela” or “Secuencial";
+    
+    public static final String ACTIVITY_NOT_FOUND = "Cero activities found";
     /**
      * Constructor for objects of class ProjectException
      */
