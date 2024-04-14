@@ -12,14 +12,13 @@ import java.util.*;
  * @version ECI 2024
  */
 public class ProjectManagerGUI extends JFrame{
-
     private static final int PREFERRED_WIDTH = 700;
     private static final int PREFERRED_HIGH= 700;
     private static final Dimension PREFERRED_DIMENSION =
                          new Dimension(PREFERRED_WIDTH,PREFERRED_HIGH);
-
     private Project project;
-
+    private Log log;
+    
     /*List*/
     private JButton buttonList;
     private JButton buttonRestartList;
@@ -36,15 +35,14 @@ public class ProjectManagerGUI extends JFrame{
     /*Search*/
     private JTextField textSearch;
     private JTextArea textResults;
+    private JButton buttonSearch;
+    private JButton buttonRestartClear;
     
-
-    
-    private ProjectManagerGUI(){
+    private ProjectManagerGUI() throws ProjectException {
         project=new Project();
         prepareElements();
         prepareActions();
     }
-
 
     private void prepareElements(){
         setTitle("Gestor de Proyectos");
@@ -61,7 +59,6 @@ public class ProjectManagerGUI extends JFrame{
         labels.add("Buscar", prepareSearchArea());
         add(labels);
         setSize(PREFERRED_DIMENSION);
-        
     }
 
 
@@ -98,7 +95,6 @@ public class ProjectManagerGUI extends JFrame{
      * Prepare area add
      * @return 
      */
-    
     private JPanel prepareAreaAdd(){
             
         Box fields = Box.createVerticalBox();
@@ -129,8 +125,8 @@ public class ProjectManagerGUI extends JFrame{
         panel.add(botones, BorderLayout.SOUTH);
         return panel;
     }
-
-   /**
+    
+    /**
      * Prepare area search
      * @return 
      */
@@ -140,7 +136,11 @@ public class ProjectManagerGUI extends JFrame{
         search.add(new JLabel("Buscar", JLabel.LEFT));
         textSearch = new JTextField(50);
         search.add(textSearch);
-        
+        JPanel botones = new JPanel();
+        buttonSearch = new JButton("Buscar");
+        botones.add(buttonSearch);
+        buttonRestartClear = new JButton("Limpiar");
+        botones.add(buttonRestartClear);
         textResults = new JTextArea(10,50);
         textResults.setEditable(false);
         textResults.setLineWrap(true);
@@ -153,7 +153,7 @@ public class ProjectManagerGUI extends JFrame{
         panel.setLayout(new BorderLayout());
         panel.add(search, BorderLayout.NORTH);
         panel.add(scrollArea, BorderLayout.CENTER);
-
+        panel.add(botones, BorderLayout.SOUTH);
         return panel;
     }
 
@@ -196,6 +196,19 @@ public class ProjectManagerGUI extends JFrame{
         });
         
         /*Search*/
+        buttonSearch.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ev){
+                actionSearch();
+            }
+        });
+        
+        buttonRestartClear.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ev){
+                textSearch.setText("");
+            }
+        });
+        
+        /*
         textSearch.getDocument().addDocumentListener(new DocumentListener(){
             public void changedUpdate(DocumentEvent ev){
                 actionSearch();
@@ -208,9 +221,8 @@ public class ProjectManagerGUI extends JFrame{
             public void removeUpdate(DocumentEvent ev){
                 actionSearch();
             }
-            
-
         });
+        */
     }    
 
     
@@ -219,21 +231,48 @@ public class ProjectManagerGUI extends JFrame{
     }
     
     private void  actionAdd(){
-         project.add(name.getText().trim(),cost.getText().trim(),time.getText().trim(), basics.getText().trim());
-       
+        try{
+            project.add(name.getText().trim(),cost.getText().trim(),time.getText().trim(), basics.getText().trim());
+        }
+        catch(ProjectException e){
+            if(e.getMessage().equals(ProjectException.NAME_ALREADY_USED)){
+                JOptionPane.showMessageDialog(this, "An error occurred during the addition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } 
+            else if(e.getMessage().equals(ProjectException.COST_AND_TIME_ARE_NOT_NUMBERS)){
+                JOptionPane.showMessageDialog(this, "An error occurred during the addition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else if((e.getMessage().equals(ProjectException.THE_SUBACTIVITY_NOT_EXISTS))){
+                JOptionPane.showMessageDialog(this, "An error occurred during the addition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "An error occurred, we are sorry: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                log.record(e);
+            }
+        }
     }
 
     private void actionSearch(){
-        String pattern=textSearch.getText();
-        String answer = "";
-        if(pattern.length() > 0) {
-            answer = project.search(pattern);
+        try{
+            String pattern = textSearch.getText().toString();
+            String answer = "";
+            if(pattern.length() > 0) {
+                answer = project.search(pattern);
+            }
+            textResults.setText(answer);
         }
-        textResults.setText(answer);
-    } 
+        catch(Exception e){
+            if(e.getMessage().equals(ProjectException.ACTIVITY_NOT_FOUND)){
+                JOptionPane.showMessageDialog(this, "An error occurred during the searching: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "An error occurred, we are sorry: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                log.record(e);
+            }
+        }
+    }
     
-   public static void main(String args[]){
+    public static void main(String args[]) throws ProjectException {
        ProjectManagerGUI gui=new ProjectManagerGUI();
        gui.setVisible(true);
-   }    
+    }    
 }

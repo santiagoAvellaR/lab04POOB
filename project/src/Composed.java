@@ -27,17 +27,10 @@ public class Composed extends Activity{
     }
  
     @Override
-    /**
-     * @retunr cost
-       **/
     public int cost(){
         return cost;
     }
-    /**
-     * find the maximun time in the activities that compose composed
-     * @return the maximun time
-     * @throws Prioject Exception in case the time is not valid
-       **/
+    
     private int getTheMaximunTimeInActivities() throws ProjectException{
         int max = 0;
         for (Activity activity : activities){
@@ -48,11 +41,6 @@ public class Composed extends Activity{
         return max;
     }
     
-    /**
-     * find the total sum of all the activities that compose composed
-     * @return the total sum of time
-     * @throws ProjectException in case the time is invalid
-       **/
     private int getTheTimeSumOfActivities() throws ProjectException{
         int sum = 0;
         for (Activity activity : activities){
@@ -125,9 +113,9 @@ public class Composed extends Activity{
     
      /**
      * Calculates an estimated price using default values when necessary
-     * @param dUnknown default value por unkown times
-     * @param dError default value for times out of range
-     * @param dEmpty default value for empty times
+     * @param dUnknown
+     * @param dError
+     * @param dEmpty
      * @return the time of the activity
      */
     public int time(int dUnknow, int dError, int dEmpty){
@@ -143,7 +131,7 @@ public class Composed extends Activity{
     /**
      * Calculate an estimated price considering the modality, if is possible.
      * @param modality ['A'(verage), 'M' (ax)] Use the average or maximum time of known activities to estimate unknown ones or those with error.
-     * @return the estimated time, depending on the modlity
+     * @return 
      * @throws ProjectException  IMPOSSIBLE, if it can't be calculated
      */
     public int time(char modality) throws ProjectException{

@@ -36,6 +36,7 @@ public class ProjectManagerGUI extends JFrame{
     private JTextField textSearch;
     private JTextArea textResults;
     private JButton buttonSearch;
+    private JButton buttonRestartClear;
     
     private ProjectManagerGUI() throws ProjectException {
         project=new Project();
@@ -138,6 +139,8 @@ public class ProjectManagerGUI extends JFrame{
         JPanel botones = new JPanel();
         buttonSearch = new JButton("Buscar");
         botones.add(buttonSearch);
+        buttonRestartClear = new JButton("Limpiar");
+        botones.add(buttonRestartClear);
         textResults = new JTextArea(10,50);
         textResults.setEditable(false);
         textResults.setLineWrap(true);
@@ -199,6 +202,12 @@ public class ProjectManagerGUI extends JFrame{
             }
         });
         
+        buttonRestartClear.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ev){
+                textSearch.setText("");
+            }
+        });
+        
         /*
         textSearch.getDocument().addDocumentListener(new DocumentListener(){
             public void changedUpdate(DocumentEvent ev){
@@ -216,11 +225,11 @@ public class ProjectManagerGUI extends JFrame{
         */
     }    
 
-    
+    /**Execute action list**/
     private void actionList(){
         textDetails.setText(project.toString());
     }
-    
+    /**Execute action add**/
     private void  actionAdd(){
         try{
             project.add(name.getText().trim(),cost.getText().trim(),time.getText().trim(), basics.getText().trim());
@@ -241,7 +250,7 @@ public class ProjectManagerGUI extends JFrame{
             }
         }
     }
-
+    /**Execute action search**/
     private void actionSearch(){
         try{
             String pattern = textSearch.getText().toString();
